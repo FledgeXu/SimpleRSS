@@ -33,6 +33,12 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("io.ktor:ktor-client-core:1.4.1")
+    implementation("com.uchuhimo:konf-toml:0.23.0")
+    implementation("org.jetbrains.exposed", "exposed-core", "0.24.1")
+    implementation("org.jetbrains.exposed", "exposed-dao", "0.24.1")
+    implementation("org.jetbrains.exposed", "exposed-jdbc", "0.24.1")
+    implementation("org.xerial:sqlite-jdbc:3.32.3.2")
+    implementation("commons-io:commons-io:2.6")
 }
 
 tasks.withType<Test> {
@@ -47,7 +53,7 @@ tasks.withType<KotlinCompile> {
 }
 
 val fatJar = task("fatJar", type = Jar::class) {
-    baseName = "${project.name}-fat"
+    archiveBaseName.set("${project.name}-fat")
     // manifest Main-Class attribute is optional.
     // (Used only to provide default main class for executable jar)
     manifest {
