@@ -19,7 +19,6 @@ lateinit var CONF: Config
 fun main() {
     LOGGER.info { "Starting" }
     initFile()
-    val v = ValidationService()
     thread(isDaemon = true) {
         daemonEntry()
     }
