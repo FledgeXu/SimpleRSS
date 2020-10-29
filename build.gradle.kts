@@ -42,6 +42,7 @@ dependencies {
     implementation("commons-io:commons-io:2.6")
     implementation("io.github.microutils:kotlin-logging-jvm:2.0.2")
     implementation("org.slf4j:slf4j-simple:1.7.30")
+    implementation("com.beust:klaxon:5.0.1")
 }
 
 tasks.withType<Test> {

@@ -2,6 +2,7 @@ package com.otakusaikou.simplerss
 
 import com.otakusaikou.simplerss.daemon.daemonEntry
 import com.otakusaikou.simplerss.frontend.frontEndEntry
+import com.otakusaikou.simplerss.service.ValidationService
 import com.uchuhimo.konf.Config
 import com.uchuhimo.konf.source.toml
 import com.uchuhimo.konf.source.toml.toToml
@@ -18,6 +19,7 @@ lateinit var CONF: Config
 fun main() {
     LOGGER.info { "Starting" }
     initFile()
+    val v = ValidationService()
     thread(isDaemon = true) {
         daemonEntry()
     }
