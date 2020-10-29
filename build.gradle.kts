@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     idea
     kotlin("jvm") version "1.4.0"
+    id("com.github.johnrengelman.shadow") version ("6.1.0")
 }
 
 group = "com.otakusaikou.simplerss"
@@ -39,6 +40,8 @@ dependencies {
     implementation("org.jetbrains.exposed", "exposed-jdbc", "0.24.1")
     implementation("org.xerial:sqlite-jdbc:3.32.3.2")
     implementation("commons-io:commons-io:2.6")
+    implementation("io.github.microutils:kotlin-logging-jvm:2.0.2")
+    implementation("org.slf4j:slf4j-simple:1.7.30")
 }
 
 tasks.withType<Test> {
@@ -51,20 +54,12 @@ tasks.withType<KotlinCompile> {
         jvmTarget = "11"
     }
 }
-
-val fatJar = task("fatJar", type = Jar::class) {
-    archiveBaseName.set("${project.name}-fat")
-    // manifest Main-Class attribute is optional.
-    // (Used only to provide default main class for executable jar)
+//We crete ShadowJar in here.
+val shadowJar = tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
+    archiveBaseName.set(project.name)
     manifest {
         attributes["Main-Class"] = "com.otakusaikou.simplerss.SimpleRSSKt" // fully qualified class name of default main class
     }
-    from(configurations.compileClasspath.map { config -> config.map { if (it.isDirectory) it else zipTree(it) } })
     with(tasks["jar"] as CopySpec)
 }
-
-tasks {
-    "build" {
-        dependsOn(fatJar)
-    }
-}
+tasks.getByPath("build").dependsOn(shadowJar)
