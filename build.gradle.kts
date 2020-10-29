@@ -45,3 +45,20 @@ tasks.withType<KotlinCompile> {
         jvmTarget = "11"
     }
 }
+
+val fatJar = task("fatJar", type = Jar::class) {
+    baseName = "${project.name}-fat"
+    // manifest Main-Class attribute is optional.
+    // (Used only to provide default main class for executable jar)
+    manifest {
+        attributes["Main-Class"] = "com.otakusaikou.simplerss.SimpleRSSKt" // fully qualified class name of default main class
+    }
+    from(configurations.compileClasspath.map { config -> config.map { if (it.isDirectory) it else zipTree(it) } })
+    with(tasks["jar"] as CopySpec)
+}
+
+tasks {
+    "build" {
+        dependsOn(fatJar)
+    }
+}
