@@ -1,8 +1,7 @@
 package com.otakusaikou.simplerss
 
 import com.otakusaikou.simplerss.daemon.daemonEntry
-import com.otakusaikou.simplerss.frontend.frontEndEntry
-import com.otakusaikou.simplerss.service.ValidationService
+import com.otakusaikou.simplerss.frontend.FrontEnd
 import com.uchuhimo.konf.Config
 import com.uchuhimo.konf.source.toml
 import com.uchuhimo.konf.source.toml.toToml
@@ -22,7 +21,7 @@ fun main() {
     thread(isDaemon = true) {
         daemonEntry()
     }
-    frontEndEntry()
+    FrontEnd().frontEndEntry()
 }
 
 fun initFile() {

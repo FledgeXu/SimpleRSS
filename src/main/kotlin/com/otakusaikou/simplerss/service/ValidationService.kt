@@ -20,7 +20,7 @@ class ValidationService() {
 
         data class AuthResponse(val code: Int, val session: String)
 
-        postURL("${BASE_URL}/auth", AuthRequest(CONF[SimpleRssConfSpec.AUTH_KEY])) { result ->
+        postURL("${BASE_HTTP_URL}/auth", AuthRequest(CONF[SimpleRssConfSpec.AUTH_KEY])) { result ->
             try {
                 val response = Klaxon().parse<AuthResponse>(result.get())
                 if (response?.code == 0) {
@@ -39,7 +39,7 @@ class ValidationService() {
         LOGGER.info { "Begin verify" }
         data class VerityRequest(val sessionKey: String, val qq: Int)
         data class VerityResponse(val code: Int, val msg: String)
-        postURL("${BASE_URL}/verify", VerityRequest(session, CONF[SimpleRssConfSpec.BOT_QQ])) { result ->
+        postURL("${BASE_HTTP_URL}/verify", VerityRequest(session, CONF[SimpleRssConfSpec.BOT_QQ])) { result ->
             val response = Klaxon().parse<VerityResponse>(result.get())
             if (response?.code == 0) {
                 verifyResult = true

@@ -33,7 +33,6 @@ dependencies {
     implementation("com.google.guava:guava:29.0-jre")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("io.ktor:ktor-client-core:1.4.1")
     implementation("com.uchuhimo:konf-toml:0.23.0")
     implementation("org.jetbrains.exposed", "exposed-core", "0.24.1")
     implementation("org.jetbrains.exposed", "exposed-dao", "0.24.1")
@@ -43,6 +42,7 @@ dependencies {
     implementation("io.github.microutils:kotlin-logging-jvm:2.0.2")
     implementation("org.slf4j:slf4j-simple:1.7.30")
     implementation("com.beust:klaxon:5.0.1")
+    implementation("com.squareup.okhttp3:okhttp:4.9.0")
 }
 
 tasks.withType<Test> {
