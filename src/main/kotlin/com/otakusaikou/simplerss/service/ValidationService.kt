@@ -1,7 +1,8 @@
 package com.otakusaikou.simplerss.service
 
+import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Klaxon
-import com.beust.klaxon.KlaxonException
+import com.beust.klaxon.Parser
 import com.github.kittinunf.fuel.core.FuelError
 import com.github.kittinunf.fuel.core.extensions.jsonBody
 import com.github.kittinunf.fuel.httpPost
@@ -18,18 +19,14 @@ class ValidationService() {
 
         data class AuthRequest(val authKey: String)
 
-        data class AuthResponse(val code: Int, val session: String)
 
         postURL("${BASE_HTTP_URL}/auth", AuthRequest(CONF[SimpleRssConfSpec.AUTH_KEY])) { result ->
-            try {
-                val response = Klaxon().parse<AuthResponse>(result.get())
-                if (response?.code == 0) {
-                    authResult = response.session
-                }
-            } catch (e: KlaxonException) {
+            val response: JsonObject = Parser.default().parse(StringBuilder(result.get())) as JsonObject
+            if (response["code"] == 0) {
+                authResult = response["session"] as String
+            } else {
                 LOGGER.info { result.get() }
             }
-
         }
         return authResult
     }
