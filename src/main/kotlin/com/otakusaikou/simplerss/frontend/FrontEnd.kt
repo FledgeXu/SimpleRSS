@@ -1,21 +1,12 @@
 package com.otakusaikou.simplerss.frontend
 
 import com.otakusaikou.simplerss.service.BASE_WEBSOCKET_URL
-import com.otakusaikou.simplerss.service.ValidationService
+import com.otakusaikou.simplerss.session
 import okhttp3.OkHttpClient
 import okhttp3.Request
 
 
 class FrontEnd() {
-    var session: String
-
-    init {
-        val validationService = ValidationService()
-        session = validationService.auth()
-        validationService.verify(session)
-    }
-
-
     fun frontEndEntry() {
         val client = OkHttpClient()
         val request: Request = Request.Builder().url("${BASE_WEBSOCKET_URL}/message?sessionKey=${session}").build()
