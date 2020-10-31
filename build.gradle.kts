@@ -26,6 +26,7 @@ idea {
 repositories {
     jcenter()
     mavenCentral()
+    maven("https://jitpack.io")
 }
 
 dependencies {
@@ -34,6 +35,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlinx:kotlinx.dom:0.0.10")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.0")
     implementation("com.uchuhimo:konf-toml:0.23.0")
     implementation("org.jetbrains.exposed", "exposed-core", "0.24.1")
     implementation("org.jetbrains.exposed", "exposed-dao", "0.24.1")
@@ -44,6 +46,7 @@ dependencies {
     implementation("org.slf4j:slf4j-simple:1.7.30")
     implementation("com.beust:klaxon:5.0.1")
     implementation("com.squareup.okhttp3:okhttp:4.9.0")
+    implementation("com.github.muhrifqii.ParseRSS:parserss:master-SNAPSHOT")
 }
 
 tasks.withType<Test> {

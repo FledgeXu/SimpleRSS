@@ -12,6 +12,7 @@ import com.otakusaikou.simplerss.CONF
 import com.otakusaikou.simplerss.LOGGER
 import com.otakusaikou.simplerss.SimpleRssConfSpec
 import com.otakusaikou.simplerss.session
+import org.jetbrains.exposed.sql.transactions.transaction
 
 
 fun authService(): String {
@@ -74,6 +75,7 @@ fun getFeedXML(url: String): String? {
         else -> null
     }
 }
+
 
 private fun postURL(url: String, requestObject: Any?, block: (r: Result<String, FuelError>) -> Unit) {
     val (_, _, result) = url
