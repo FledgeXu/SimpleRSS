@@ -8,4 +8,5 @@ object SimpleRssConfSpec : ConfigSpec("Config") {
     val PORT by optional(8777, "port", "Mirai http port")
     val AUTH_KEY by optional("123456789", "auth_key", "Mirai http authKey")
     val BOT_QQ by optional(1111111111, "bot_qq", "The QQ number of RSS Bot")
+    val FRESH_TIME by optional(10, "fresh_time", "When limitation of fetch rss feed")
 }

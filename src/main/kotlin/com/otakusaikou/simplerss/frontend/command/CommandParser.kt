@@ -5,7 +5,11 @@ import com.github.kittinunf.result.Result
 import com.otakusaikou.simplerss.LOGGER
 import com.otakusaikou.simplerss.service.FeedService
 import com.otakusaikou.simplerss.service.sendMessageService
+import kotlinx.dom.parseXml
+import org.xml.sax.InputSource
+import org.xml.sax.SAXException
 import java.io.IOException
+import java.io.StringReader
 
 //TODO: a command registry system.
 object CommandParser {
@@ -67,7 +71,14 @@ object CommandParser {
             val (_, _, result) = url.httpGet().responseString()
             when (result) {
                 is Result.Success -> {
-                    checkResult = true
+                    try {
+                        val document = parseXml(InputSource(StringReader(result.value)))
+                        if (document.getElementsByTagName("rss").length != 0) {
+                            checkResult = true
+                        }
+                    } catch (e: SAXException) {
+                        e.printStackTrace()
+                    }
                 }
                 else -> {
                 }

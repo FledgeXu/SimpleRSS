@@ -5,6 +5,7 @@ import com.beust.klaxon.Klaxon
 import com.beust.klaxon.Parser
 import com.github.kittinunf.fuel.core.FuelError
 import com.github.kittinunf.fuel.core.extensions.jsonBody
+import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.httpPost
 import com.github.kittinunf.result.Result
 import com.otakusaikou.simplerss.CONF
@@ -62,6 +63,16 @@ fun sendMessageService(message: String, qq: Int): Boolean {
         }
     }
     return sendMessageResult
+}
+
+fun getFeedXML(url: String): String? {
+    val (_, _, result) = url.httpGet().responseString()
+    return when (result) {
+        is Result.Success -> {
+            result.value
+        }
+        else -> null
+    }
 }
 
 private fun postURL(url: String, requestObject: Any?, block: (r: Result<String, FuelError>) -> Unit) {

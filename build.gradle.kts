@@ -33,6 +33,7 @@ dependencies {
     implementation("com.google.guava:guava:29.0-jre")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("org.jetbrains.kotlinx:kotlinx.dom:0.0.10")
     implementation("com.uchuhimo:konf-toml:0.23.0")
     implementation("org.jetbrains.exposed", "exposed-core", "0.24.1")
     implementation("org.jetbrains.exposed", "exposed-dao", "0.24.1")

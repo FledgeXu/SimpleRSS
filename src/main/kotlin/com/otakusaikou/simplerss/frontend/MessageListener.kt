@@ -25,7 +25,8 @@ class MessageListener : WebSocketListener() {
         val json: JsonObject = Parser.default().parse(StringBuilder(text)) as JsonObject
         if (json["type"] == "GroupMessage") {
             LOGGER.info { json.obj("sender")?.string("permission") }
-            if (json.obj("sender")?.string("permission") == "ADMINISTRATOR") {
+            val permission = json.obj("sender")?.string("permission")
+            if (permission == "ADMINISTRATOR" || permission == "OWNER") {
                 json.array<JsonObject>("messageChain")?.forEach {
                     CommandParser.parser(if (it["text"] != null) it["text"] as String else "",
                             // We have checked "GroupMessage" here and it should not be null. If it is, it's not our failure and we should let it crash.

@@ -41,7 +41,8 @@ class FeedService() {
             val newFeed = if (Feed.find { Feeds.url eq feedUrl }.empty())
                 Feed.new {
                     url = feedUrl
-                    context = ""
+                    context = getFeedXML(url) ?: ""
+                    time = System.currentTimeMillis() / 1000L // Unix Timestamp
                 }
             else Feed.find { Feeds.url eq feedUrl }.first()
             subscriber.feeds = SizedCollection(subscriber.feeds.distinct() + newFeed)

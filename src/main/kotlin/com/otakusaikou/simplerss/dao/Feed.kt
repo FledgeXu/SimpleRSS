@@ -11,5 +11,6 @@ class Feed(id: EntityID<Int>) : IntEntity(id) {
 
     var url by Feeds.url
     var context by Feeds.context
+    var time by Feeds.time
     var subscribers by Subscriber via Subscriptions
 }
