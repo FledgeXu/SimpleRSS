@@ -24,10 +24,13 @@ class MessageListener : WebSocketListener() {
         LOGGER.info { text }
         val json: JsonObject = Parser.default().parse(StringBuilder(text)) as JsonObject
         if (json["type"] == "GroupMessage") {
-            json.array<JsonObject>("messageChain")?.forEach {
-                CommandParser.parser(if (it["text"] != null) it["text"] as String else "",
-                        // We have checked "GroupMessage" here and it should not be null. If it is, it's not our failure and we should let it crash.
-                        qqGroup = json.obj("sender")?.obj("group")?.get("id") as Int)
+            LOGGER.info { json.obj("sender")?.string("permission") }
+            if (json.obj("sender")?.string("permission") == "ADMINISTRATOR") {
+                json.array<JsonObject>("messageChain")?.forEach {
+                    CommandParser.parser(if (it["text"] != null) it["text"] as String else "",
+                            // We have checked "GroupMessage" here and it should not be null. If it is, it's not our failure and we should let it crash.
+                            qqGroup = json.obj("sender")?.obj("group")?.get("id") as Int)
+                }
             }
         }
     }
