@@ -118,7 +118,9 @@ class FeedService() {
                 val feed = Feed.findById(update.first)
                 feed?.subscribers?.forEach { subscriber ->
                     update.second.forEach { updateContext ->
-                        sendMessageService("${updateContext.title}\n${updateContext.url}", subscriber.qqNumber)
+                        if (updateContext.title != "") {
+                            sendMessageService("${updateContext.title}\n${updateContext.url}", subscriber.qqNumber)
+                        }
                     }
                 }
             }

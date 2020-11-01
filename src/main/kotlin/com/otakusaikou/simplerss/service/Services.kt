@@ -12,7 +12,6 @@ import com.otakusaikou.simplerss.CONF
 import com.otakusaikou.simplerss.LOGGER
 import com.otakusaikou.simplerss.SimpleRssConfSpec
 import com.otakusaikou.simplerss.session
-import org.jetbrains.exposed.sql.transactions.transaction
 
 
 fun authService(): String {
@@ -58,7 +57,7 @@ fun sendMessageService(message: String, qq: Int): Boolean {
     postURL("${BASE_HTTP_URL}/sendGroupMessage", Message(session, qq, listOf(PlainMessage("Plain", message)))) { result ->
         val response: JsonObject = Parser.default().parse(StringBuilder(result.get())) as JsonObject
         if (response["code"] == 0) {
-            sendMessageResult = true;
+            sendMessageResult = true
         } else {
             LOGGER.info { result.get() }
         }
@@ -78,7 +77,7 @@ fun getFeedXML(url: String): String? {
 
 
 private fun postURL(url: String, requestObject: Any?, block: (r: Result<String, FuelError>) -> Unit) {
-    val (_, _, result) = url
+    val (request, response, result) = url
             .httpPost()
             .jsonBody(Klaxon().toJsonString(requestObject))
             .responseString()
@@ -86,6 +85,9 @@ private fun postURL(url: String, requestObject: Any?, block: (r: Result<String, 
         is Result.Success -> {
             block(result)
         }
-        else -> LOGGER.info { "Connect Fails" }
+        else -> {
+            LOGGER.info { request }
+            LOGGER.info { response }
+        }
     }
 }
