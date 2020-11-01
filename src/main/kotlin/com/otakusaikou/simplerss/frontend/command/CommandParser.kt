@@ -43,7 +43,7 @@ object CommandParser {
                 unsubCommand(commandWithParameter[1], qqGroup)
             }
             "echo" -> {
-                sendMessageService(if (commandWithParameter.size == 2) commandWithParameter[1] else " ", qqGroup)
+                sendMessageService(if (commandWithParameter.size > 2) commandWithParameter.subList(1, commandWithParameter.size).reduce { acc, s -> acc + s } else " ", qqGroup)
             }
             else -> {
                 sendMessageService("你输入的不是一个有效的命令，请检查命令格式", qqGroup)

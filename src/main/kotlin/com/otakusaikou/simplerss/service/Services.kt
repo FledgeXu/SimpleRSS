@@ -35,7 +35,7 @@ fun authService(): String {
 fun verifyService(session: String): Boolean {
     var verifyResult = false
     LOGGER.info { "Begin verify" }
-    data class VerityRequest(val sessionKey: String, val qq: Int)
+    data class VerityRequest(val sessionKey: String, val qq: Long)
     data class VerityResponse(val code: Int, val msg: String)
     postURL("${BASE_HTTP_URL}/verify", VerityRequest(session, CONF[SimpleRssConfSpec.BOT_QQ])) { result ->
         val response = Klaxon().parse<VerityResponse>(result.get())
