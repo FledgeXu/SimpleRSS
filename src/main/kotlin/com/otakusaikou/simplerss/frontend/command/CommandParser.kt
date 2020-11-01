@@ -1,9 +1,13 @@
 package com.otakusaikou.simplerss.frontend.command
 
+import com.github.kittinunf.fuel.httpGet
+import com.github.kittinunf.result.Result
 import com.otakusaikou.simplerss.LOGGER
 import com.otakusaikou.simplerss.service.FeedService
 import com.otakusaikou.simplerss.service.sendMessageService
-import kotlinx.dom.parseXml
+import com.rometools.rome.io.SyndFeedInput
+import java.io.IOException
+import java.io.StringReader
 
 //TODO: a command registry system.
 object CommandParser {
@@ -61,12 +65,22 @@ object CommandParser {
 
     private fun isValidFeed(url: String): Boolean {
         var checkResult = false
+        val feed = SyndFeedInput()
         try {
-            val document = parseXml(url)
-            if (document.documentElement.nodeName.equals("rss", true) || document.documentElement.nodeName.equals("atom", true)) {
-                checkResult = true
+            val (_, _, result) = url.httpGet().responseString()
+            when (result) {
+                is Result.Success -> {
+                    try {
+                        feed.build(StringReader(result.value))
+                        checkResult = true
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+                else -> {
+                }
             }
-        } catch (e: Exception) {
+        } catch (e: IOException) {
             e.printStackTrace()
         }
         return checkResult
