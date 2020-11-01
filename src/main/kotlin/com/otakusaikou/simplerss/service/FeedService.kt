@@ -10,14 +10,13 @@ import com.otakusaikou.simplerss.dao.Subscriber
 import com.otakusaikou.simplerss.model.Feeds
 import com.otakusaikou.simplerss.model.Subscribers
 import com.otakusaikou.simplerss.model.Subscriptions
-import kotlinx.dom.asList
-import kotlinx.dom.parseXml
+import com.rometools.rome.feed.synd.SyndEntry
+import com.rometools.rome.io.SyndFeedInput
 import org.apache.commons.io.FileUtils
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.SizedCollection
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.xml.sax.InputSource
 import java.io.File
 import java.io.StringReader
 
@@ -89,41 +88,49 @@ class FeedService() {
         }
     }
 
-    fun sendUpdateService() {
+    data class UpdateContext(val title: String, val url: String)
 
-//        parseXml("https://v2mcdev.com/c/5-category/5.rss").getElementsByTagName("item").asList().forEach {
-//            for (node in it.childNodes.asList()) {
-//                if (node.nodeName == "title")
-//                    LOGGER.info { node.childNodes.asList()[0].nodeValue }
-//                if(node.nodeName == "link")
-////                if(node.nodeName == "title"){
-////
-////                }
-//            }
-//        }
+    fun sendUpdateService(): List<Pair<Int, List<UpdateContext>>> {
+        var result: List<Pair<Int, List<UpdateContext>>> = mutableListOf()
         transaction {
             Feed.all().forEach {
-                val document = parseXml(InputSource(StringReader(it.context)))
-                document.getElementsByTagName("item").asList().forEach {
-                    for (node in it.childNodes.asList()) {
-                        var title = ""
-                        var link = ""
-                        var time = ""
-                        if (node.nodeName == "title") {
-                            title = node.childNodes.asList()[0].nodeValue
-                        }
-                        if (node.nodeName == "link") {
-                            link = node.childNodes.asList()[0].nodeValue
-                        }
-                        if (node.nodeName == "link") {
-                            link = node.childNodes.asList()[0].nodeValue
-                        }
+                var contextList: List<UpdateContext> = mutableListOf()
+                val oldItems = SyndFeedInput().build(StringReader(it.oldContext)).entries
+                val newFeed = SyndFeedInput().build(StringReader(it.context))
+                newFeed.entries.forEach { item ->
+                    if (isNotInOldFeeds(item, oldItems)) {
+                        LOGGER.info { item.title }
+                        contextList = contextList + UpdateContext(item.title, item.link)
+                    }
+                }
+                it.time = System.currentTimeMillis() / 1000L
+                val pair: Pair<Int, List<UpdateContext>> = Pair(it.id.value, contextList)
+                result = result + pair
+            }
+        }
+        return result
+    }
 
-
+    fun sendUpdateMessage() {
+        val updates: List<Pair<Int, List<UpdateContext>>> = sendUpdateService()
+        transaction {
+            updates.forEach { update ->
+                val feed = Feed.findById(update.first)
+                feed?.subscribers?.forEach { subscriber ->
+                    update.second.forEach { updateContext ->
+                        sendMessageService("${updateContext.title}\n${updateContext.url}", subscriber.qqNumber)
                     }
                 }
             }
         }
     }
 
+    private fun isNotInOldFeeds(item: SyndEntry, oldItems: List<SyndEntry>): Boolean {
+        oldItems.forEach {
+            if (item.title == it.title) {
+                return false
+            }
+        }
+        return true
+    }
 }

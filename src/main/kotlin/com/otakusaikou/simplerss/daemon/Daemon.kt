@@ -7,9 +7,9 @@ import java.lang.Thread.sleep
 
 fun daemonEntry() {
     while (true) {
-        sleep(CONF[SimpleRssConfSpec.FRESH_TIME] * 6000L)
+        sleep(CONF[SimpleRssConfSpec.FRESH_TIME] * 60000L)
         val feedService = FeedService()
         feedService.updateRSS()
-        feedService.sendUpdateService()
+        feedService.sendUpdateMessage()
     }
 }

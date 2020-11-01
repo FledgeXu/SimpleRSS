@@ -46,7 +46,7 @@ dependencies {
     implementation("org.slf4j:slf4j-simple:1.7.30")
     implementation("com.beust:klaxon:5.0.1")
     implementation("com.squareup.okhttp3:okhttp:4.9.0")
-    implementation("com.apptastic:rssreader:2.3.1")
+    implementation("com.rometools:rome:1.15.0")
 }
 
 tasks.withType<Test> {
