@@ -9,6 +9,6 @@ import org.jetbrains.exposed.dao.id.EntityID
 class Subscriber(id: EntityID<Int>) : IntEntity(id) {
     companion object : IntEntityClass<Subscriber>(Subscribers)
 
-    var qqNumber by Subscribers.qqNumber
+    var qqNumber: Long by Subscribers.qqNumber
     var feeds by Feed via Subscriptions
 }

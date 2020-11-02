@@ -30,7 +30,7 @@ class MessageListener : WebSocketListener() {
                 json.array<JsonObject>("messageChain")?.forEach {
                     CommandParser.parser(if (it["text"] != null) it["text"] as String else "",
                             // We have checked "GroupMessage" here and it should not be null. If it is, it's not our failure and we should let it crash.
-                            qqGroup = json.obj("sender")?.obj("group")?.get("id") as Int)
+                            qqGroup = (json.obj("sender")?.obj("group")?.get("id") as Int).toLong())
                 }
             }
         }

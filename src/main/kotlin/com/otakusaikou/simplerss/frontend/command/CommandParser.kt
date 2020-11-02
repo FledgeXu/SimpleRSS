@@ -11,7 +11,7 @@ import java.io.StringReader
 
 //TODO: a command registry system.
 object CommandParser {
-    fun parser(rawText: String, qqGroup: Int) {
+    fun parser(rawText: String, qqGroup: Long) {
         if (rawText.isEmpty()) return
         if (rawText[0] != '/') {
             LOGGER.info { "\"${rawText}\" is not a Command" }
@@ -45,20 +45,28 @@ object CommandParser {
             "echo" -> {
                 sendMessageService(if (commandWithParameter.size > 2) commandWithParameter.subList(1, commandWithParameter.size).reduce { acc, s -> acc + s } else " ", qqGroup)
             }
+            "listsub" -> {
+                listSubCommand(qqGroup)
+            }
             else -> {
                 sendMessageService("你输入的不是一个有效的命令，请检查命令格式", qqGroup)
             }
         }
     }
 
-    private fun subCommand(feedUrl: String, qqGroup: Int): Boolean {
+    private fun listSubCommand(qqGroup: Long) {
+        val listedSub = FeedService().getSubList(qqGroup).reduce { acc, s -> acc + "\n" + s }
+        sendMessageService(listedSub, qqGroup)
+    }
+
+    private fun subCommand(feedUrl: String, qqGroup: Long): Boolean {
         if (!isValidFeed(feedUrl)) return false
         FeedService().subFeed(feedUrl, qqGroup)
         sendMessageService("你已经成功订阅：${feedUrl}", qqGroup)
         return true
     }
 
-    private fun unsubCommand(feedUrl: String, qqGroup: Int) {
+    private fun unsubCommand(feedUrl: String, qqGroup: Long) {
         FeedService().unsubFeed(feedUrl, qqGroup)
         sendMessageService("你已经取消订阅", qqGroup)
     }

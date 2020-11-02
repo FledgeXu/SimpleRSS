@@ -38,7 +38,7 @@ class FeedService() {
         }
     }
 
-    fun subFeed(feedUrl: String, qqGroup: Int) {
+    fun subFeed(feedUrl: String, qqGroup: Long) {
         transaction {
             val subscriber = if (Subscriber.find { Subscribers.qqNumber eq qqGroup }.empty())
                 Subscriber.new { qqNumber = qqGroup }
@@ -56,7 +56,7 @@ class FeedService() {
         }
     }
 
-    fun unsubFeed(feedUrl: String, qqGroup: Int) {
+    fun unsubFeed(feedUrl: String, qqGroup: Long) {
         transaction {
             if (!Subscriber.find { Subscribers.qqNumber eq qqGroup }.empty() && !Feed.find { Feeds.url eq feedUrl }.empty()) {
                 val subscriber = Subscriber.find { Subscribers.qqNumber eq qqGroup }.first()
@@ -125,6 +125,17 @@ class FeedService() {
                 }
             }
         }
+    }
+
+    fun getSubList(qqGroup: Long): List<String> {
+        var result: List<String> = mutableListOf()
+        transaction {
+            val subscriber = Subscriber.find { Subscribers.qqNumber eq qqGroup }.first()
+            subscriber.feeds.forEach {
+                result = result + it.url
+            }
+        }
+        return result
     }
 
     private fun isNotInOldFeeds(item: SyndEntry, oldItems: List<SyndEntry>): Boolean {

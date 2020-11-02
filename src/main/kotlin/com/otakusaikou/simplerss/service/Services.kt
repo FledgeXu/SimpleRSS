@@ -49,9 +49,9 @@ fun verifyService(session: String): Boolean {
 }
 
 //TODO: We can abstract it with #authService.
-fun sendMessageService(message: String, qq: Int): Boolean {
+fun sendMessageService(message: String, qq: Long): Boolean {
     data class PlainMessage(val type: String, val text: String)
-    data class Message(val sessionKey: String, val group: Int, val messageChain: List<PlainMessage>)
+    data class Message(val sessionKey: String, val group: Long, val messageChain: List<PlainMessage>)
 
     var sendMessageResult: Boolean = false
     postURL("${BASE_HTTP_URL}/sendGroupMessage", Message(session, qq, listOf(PlainMessage("Plain", message)))) { result ->
