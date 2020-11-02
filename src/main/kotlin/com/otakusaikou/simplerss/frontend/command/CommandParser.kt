@@ -43,7 +43,7 @@ object CommandParser {
                 unsubCommand(commandWithParameter[1], qqGroup)
             }
             "echo" -> {
-                sendMessageService(if (commandWithParameter.size > 2) commandWithParameter.subList(1, commandWithParameter.size).reduce { acc, s -> acc + s } else " ", qqGroup)
+                sendMessageService(if (commandWithParameter.size >= 2) commandWithParameter.subList(1, commandWithParameter.size).reduce { acc, s -> acc + s } else " ", qqGroup)
             }
             "listsub" -> {
                 listSubCommand(qqGroup)
