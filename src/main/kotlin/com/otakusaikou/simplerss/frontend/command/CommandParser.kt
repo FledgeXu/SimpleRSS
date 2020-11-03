@@ -49,7 +49,7 @@ object CommandParser {
                 listSubCommand(qqGroup)
             }
             else -> {
-                sendMessageService("你输入的不是一个有效的命令，请检查命令格式", qqGroup)
+//                sendMessageService("你输入的不是一个有效的命令，请检查命令格式", qqGroup)
             }
         }
     }
