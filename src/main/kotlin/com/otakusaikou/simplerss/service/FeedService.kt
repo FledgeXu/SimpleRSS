@@ -95,17 +95,21 @@ class FeedService() {
         transaction {
             Feed.all().forEach {
                 var contextList: List<UpdateContext> = mutableListOf()
-                val oldItems = SyndFeedInput().build(StringReader(it.oldContext)).entries
-                val newFeed = SyndFeedInput().build(StringReader(it.context))
-                newFeed.entries.forEach { item ->
-                    if (isNotInOldFeeds(item, oldItems)) {
-                        LOGGER.info { item.title }
-                        contextList = contextList + UpdateContext(item.title, item.link)
+                try {
+                    val oldItems = SyndFeedInput().build(StringReader(it.oldContext)).entries
+                    val newFeed = SyndFeedInput().build(StringReader(it.context))
+                    newFeed.entries.forEach { item ->
+                        if (isNotInOldFeeds(item, oldItems, it.time)) {
+                            LOGGER.info { item.title }
+                            contextList = contextList + UpdateContext(item.title, item.link)
+                        }
                     }
+                    it.time = System.currentTimeMillis() / 1000L
+                    val pair: Pair<Int, List<UpdateContext>> = Pair(it.id.value, contextList)
+                    result = result + pair
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
-                it.time = System.currentTimeMillis() / 1000L
-                val pair: Pair<Int, List<UpdateContext>> = Pair(it.id.value, contextList)
-                result = result + pair
             }
         }
         return result
@@ -138,12 +142,16 @@ class FeedService() {
         return result
     }
 
-    private fun isNotInOldFeeds(item: SyndEntry, oldItems: List<SyndEntry>): Boolean {
-        oldItems.forEach {
-            if (item.title == it.title) {
-                return false
-            }
+    private fun isNotInOldFeeds(item: SyndEntry, oldItems: List<SyndEntry>, time: Long): Boolean {
+        // For now we just support the feeds which have `updatedDate` or `publishedDate`
+        if ((if (item.updatedDate != null) item.updatedDate.time / 1000L else 0) > time || (if (item.publishedDate != null) item.publishedDate.time / 1000L else 0) > time) {
+            return true
         }
-        return true
+//        oldItems.forEach {
+//            if (item.title == it.title) {
+//                return false
+//            }
+//        }
+        return false
     }
 }
